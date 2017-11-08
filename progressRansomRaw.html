@@ -1,0 +1,64 @@
+<html>
+<body>
+<script>
+//====================================================================================================
+	var ethAddress = "PUT ETH ADDRESS HERE";									
+	var etherScanApiKey = "PUT API KEY HERE";										
+	var ethNeeded = 1;																				
+	var DESCRIPTION = "PUT DESCRIPTION HERE";
+//====================================================================================================
+
+	var url = "https://api.etherscan.io/api?module=account&action=balance&address="+ethAddress+"&tag=latest&apikey="+etherScanApiKey;
+    
+    // GENERATING HTML ELEMENTS
+    var pb = document.createElement("PROGRESS");
+    var b = document.createElement("SPAN");
+    var a = document.createElement("SPAN");
+    var p = document.createElement("P");
+    var l = document.createElement("A");
+    var br = document.createElement("BR");
+    var hrb = document.createElement("HR");
+    var hra = document.createElement("HR");
+    document.body.appendChild(hrb);
+    document.body.appendChild(l);
+    document.body.appendChild(br);
+    document.body.appendChild(b);
+    document.body.appendChild(pb);
+    document.body.appendChild(a);
+    document.body.appendChild(p);
+    document.body.appendChild(hra);
+
+    // FETCHING ADDRESS DATA
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+	    if (this.readyState == 4 && this.status == 200) {
+	    	// PARSING JSON GETTING BALANCE
+	        var d = JSON.parse(this.responseText);
+	        var n = parseInt(d.result);
+	        var currentEth = n /= Math.pow(10, 18);
+	        var percent = currentEth/ethNeeded;
+	        pb.value = percent;
+	       	b.innerHTML = currentEth + " ";
+	        a.innerHTML = " " + ethNeeded;
+	        l.innerHTML = ethAddress;
+	        p.innerHTML = DESCRIPTION;
+	        l.href = "https://etherscan.io/address/" + ethAddress;
+			if(currentEth >= ethNeeded){
+				document.getElementById('SUCCESS').innerHTML = "INFORMATION RELEASED";
+			}
+	    }
+	};
+	xmlhttp.open("GET", url, true);
+	xmlhttp.send();
+function Download(url) {
+    document.getElementById('if').src = url;
+};
+</script>
+<style type="text/css">
+progress{
+	height: 20px;
+	width: 300px;
+}
+</style>
+</body>
+</html>
