@@ -90,7 +90,81 @@
 
 		</style>
 		<script type="text/javascript">
+		 var yesM=[];
+		 var noM=[];
+		 var genre_ids=[];
+			var tempMov;
+		function randomMovie(){
+
+			genre_ids=genre_ids.slice(0, 5);
+			var rg = Math.floor(Math.random() * genre_ids.length);
+			if((genre_ids.length>0)){
+				 genre_ids=genre_ids.filter(onlyUnique);
+				 
+				 gstring=genre_ids.toString();
+
+				var settings = {
+  "async": true,
+  "crossDomain": true,
+  "url": "https://api.themoviedb.org/3/discover/movie?api_key=241ac84290f6f5c82e236666b3d4d844&language=en-US&include_adult=false&with_genres="+gstring,
+  "method": "GET",
+  "headers": {},
+  "data": "{}"
+}
+
+$.ajax(settings).done(function (d) {
+	  
+
+	   
+  //var d = jQuery.parseJSON(response);
+			        var l = Math.floor(Math.random() * d.results.length);
+			        var n = d.results[l];
+			        console.log(n);
+			        tempMov = n;
+document.getElementById("overview").innerHTML=n.overview;
+document.getElementById("rating").innerHTML=n.vote_average;
+document.getElementById("title").innerHTML=n.title;
+			        document.getElementById("posterI").src="https://image.tmdb.org/t/p/w500/"+n.poster_path; 
+});
+
+				}else{
+					var xmlhttp = new XMLHttpRequest();
+			xmlhttp.onreadystatechange = function() {
+			    if (this.readyState == 4 && this.status == 200) {
+			        var d = JSON.parse(this.responseText);
+			        var l = Math.floor(Math.random() * d.results.length);
+			        var n = d.results[l];
+			        console.log(n);
+			        tempMov = n;
+document.getElementById("overview").innerHTML=n.overview;
+document.getElementById("rating").innerHTML=n.vote_average;
+document.getElementById("title").innerHTML=n.title;
+			        document.getElementById("posterI").src="https://image.tmdb.org/t/p/w500/"+n.poster_path;
+			    }
+			};
 			
+			 
+			
+				xmlhttp.open("GET", "https://api.themoviedb.org/3/discover/movie?api_key=241ac84290f6f5c82e236666b3d4d844&language=en-US&include_adult=false", true);
+			
+				xmlhttp.send();
+
+}}
+
+
+ 
+
+		
+$(function() {
+    randomMovie();
+});
+
+
+function onlyUnique(value, index, self) { 
+    return self.indexOf(value) === index;
+}
+
+
 			$(document).ready(function(){
 
 			//PC SWIPE
@@ -135,18 +209,26 @@
 				    running = false;
 				    }, 1000);		     
 				}
-			}else{
-				console.log("running");
-			}
-
+			} 
 			function updateInfo(dir){
 				if(dir){
-					//swipe yes
-					document.getElementById("posterI").src = "https://images-na.ssl-images-amazon.com/images/I/41fdRRt8TgL.jpg";
+					randomMovie();
+					//if like push into stack and append
+					$.merge(genre_ids,tempMov.genre_ids);
+					yesM.push(tempMov.id);
 				}else{
-					//swipe no
-					document.getElementById("posterI").src = "https://images-na.ssl-images-amazon.com/images/I/41%2BMbGYLI7L.jpg";
+					noM.push(tempMov.id);
+					randomMovie();
+					for (var i = tempMov.genre_ids.length - 1; i >= 0; i--) {
+						 for (var j = tempMov.length - 1; j >= 0; j--) {
+						 	if(genre_ids[j]==tempMov.genre_ids[i]){
+						 		genre_ids[j]=28;
+						 	}
+						 };
+					};
+					
 				}
+
 
 			}
 		}
@@ -161,8 +243,9 @@
 			<br>
 			<hr>
  			<br>
-			<p>IMBD RATING ⭐⭐⭐⭐⭐</p>
-			<p>Humanity finds a mysterious, obviously artificial object buried beneath the Lunar surface and, with the intelligent computer H.A.L. 9000, sets off on a quest.</p>
+ 			<h3 id="title"></h3>
+			<p>IMBD RATING: <span id="rating"></span></p>
+			<p id="overview">Humanity finds a mysterious, obviously artificial object buried beneath the Lunar surface and, with the intelligent computer H.A.L. 9000, sets off on a quest.</p>
 		</div>
 	<br>
  		<div class="imgbox" id="swiper">
