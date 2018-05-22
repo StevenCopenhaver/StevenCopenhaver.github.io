@@ -12,6 +12,10 @@
 		 	margin: 0px;
 		 	padding: 0px;
 		 }
+		 #posterI{
+		    max-width: 100%;
+    		height: auto;
+		 }
 		  .imgbox {
 		  	display: grid;
 		  	height: 100%;
@@ -92,6 +96,8 @@
 		<script type="text/javascript">
 		 var yesM=[];
 		 var noM=[];
+		 var lastMovie=0;
+		 var works = true
 		 var genre_ids=[];
 			var tempMov;
 		function randomMovie(){
@@ -113,50 +119,50 @@
 }
 
 $.ajax(settings).done(function (d) {
-	  
+ 
 
-	   
   //var d = jQuery.parseJSON(response);
 			        var l = Math.floor(Math.random() * d.results.length);
 			        var n = d.results[l];
 			        console.log(n);
 			        tempMov = n;
+			        console.log(n.id+" "+lastMovie);
+console.log(lastMovie != n.id);
+	   if(lastMovie != n.id){ 
+lastMovie = n.id;
 document.getElementById("overview").innerHTML=n.overview;
 document.getElementById("rating").innerHTML=n.vote_average;
 document.getElementById("title").innerHTML=n.title;
 			        document.getElementById("posterI").src="https://image.tmdb.org/t/p/w500/"+n.poster_path; 
+			         }else{
+			         works = false;
+//alert("here1");
+			         }
 });
 
 				}else{
-					var xmlhttp = new XMLHttpRequest();
-			xmlhttp.onreadystatechange = function() {
-			    if (this.readyState == 4 && this.status == 200) {
-			        var d = JSON.parse(this.responseText);
-			        var l = Math.floor(Math.random() * d.results.length);
-			        var n = d.results[l];
-			        console.log(n);
-			        tempMov = n;
-document.getElementById("overview").innerHTML=n.overview;
-document.getElementById("rating").innerHTML=n.vote_average;
-document.getElementById("title").innerHTML=n.title;
-			        document.getElementById("posterI").src="https://image.tmdb.org/t/p/w500/"+n.poster_path;
-			    }
-			};
-			
-			 
-			
-				xmlhttp.open("GET", "https://api.themoviedb.org/3/discover/movie?api_key=241ac84290f6f5c82e236666b3d4d844&language=en-US&include_adult=false", true);
-			
-				xmlhttp.send();
+					 works = false;
+					genre_ids.push(28);
+}
+if(works == false){//alert("here2");
+	works = true;
+ return false;
 
-}}
+
+}else{
+
+	return true;
+}
+}
 
 
  
 
 		
 $(function() {
-    randomMovie();
+    while(!randomMovie()){
+						console.log("f");
+					}
 });
 
 
@@ -212,13 +218,17 @@ function onlyUnique(value, index, self) {
 			} 
 			function updateInfo(dir){
 				if(dir){
-					randomMovie();
-					//if like push into stack and append
+					while(!randomMovie()){
+						console.log("f");
+					}
+					//i like push into stack and append
 					$.merge(genre_ids,tempMov.genre_ids);
 					yesM.push(tempMov.id);
 				}else{
 					noM.push(tempMov.id);
-					randomMovie();
+					while(!randomMovie()){
+						console.log("f");
+					}
 					for (var i = tempMov.genre_ids.length - 1; i >= 0; i--) {
 						 for (var j = tempMov.length - 1; j >= 0; j--) {
 						 	if(genre_ids[j]==tempMov.genre_ids[i]){
