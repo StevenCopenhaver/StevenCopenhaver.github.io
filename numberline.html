@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<title></title>
+		<style>
+			html {background-color:black;}
+			html, body {margin: 0;overflow-y:hidden;}
+			#sm {display:flex;}
+			#sm button{margin-top: 0vh;text-shadow: 1px 1px black;border-style:none;color:white;padding:20px;font-size:10vh;}
+			#sm button:active{padding:23px;text-shadow: 3px 3px black;}
+			#n_0 {font-size:15vh !important;}
+		</style>
+	</head>
+	<body>
+		<div id="sm">	
+		</div>
+	<script>
+	function randBGC(i){
+		i = Math.ceil(Math.abs(i)/20);
+		var r = Math.floor((Math.random() * 255) +1); 
+		var g = Math.floor((Math.random() * 255/i) +1); 
+		var b = Math.floor((Math.random() * 255) +1);
+		return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+	}
+	(function(){
+		var height = window.innerHeight
+		|| document.documentElement.clientHeight
+		|| document.body.clientHeight;
+		var sm = document.getElementById("sm");
+		sm.style.height=height+"px";
+		for(var i=-1000; i<=1000; i++){
+			var num = document.createElement('button');
+			num.innerHTML = i;
+			num.id = "n_"+i;
+			num.style.backgroundColor = randBGC(i);
+			sm.appendChild(num);
+		}
+		document.getElementById('n_10').scrollIntoView();
+	})();
+	</script>
+	</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
