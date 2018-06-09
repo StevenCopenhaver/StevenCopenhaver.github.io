@@ -2,10 +2,11 @@
 <html>
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-		<title></title>
+		<title>NumberLine</title>
 		<style>
 			html {background-color:black;}
 			html, body {margin: 0;overflow-y:hidden;}
+			button {outline: none;}
 			#sm {display:flex;}
 			#sm button{margin-top: 0vh;text-shadow: 1px 1px black;border-style:none;color:white;padding:20px;font-size:10vh;}
 			#sm button:active{padding:23px;text-shadow: 3px 3px black;}
@@ -16,12 +17,35 @@
 		<div id="sm">	
 		</div>
 	<script>
+	var last = null;
+	var synth = window.speechSynthesis;
 	function randBGC(i){
 		i = Math.ceil(Math.abs(i)/20);
 		var r = Math.floor((Math.random() * 255) +1); 
 		var g = Math.floor((Math.random() * 255/i) +1); 
 		var b = Math.floor((Math.random() * 255) +1);
 		return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+	}
+	function ttsNum(i){
+		synth.cancel();
+		msg = new SpeechSynthesisUtterance(i);
+		if(last!=null && last!=i){
+			document.getElementById("n_"+last).style.color="white";
+		}
+		if(last==i){
+			msg.lang="es-US";
+			last=null;
+			document.title="SPANISH";
+			document.getElementById("n_"+i).style.color="white";
+		}else{
+			msg.lang="en";
+			document.title="ENGLISH";
+			last=i;
+			document.getElementById("n_"+i).style.color="brown";
+		}
+		msg.pitch = 1;
+		msg.rate = 1;
+		window.speechSynthesis.speak(msg);
 	}
 	(function(){
 		var height = window.innerHeight
@@ -33,6 +57,7 @@
 			var num = document.createElement('button');
 			num.innerHTML = i;
 			num.id = "n_"+i;
+			num.setAttribute("onclick",'ttsNum('+i+')');
 			num.style.backgroundColor = randBGC(i);
 			sm.appendChild(num);
 		}
